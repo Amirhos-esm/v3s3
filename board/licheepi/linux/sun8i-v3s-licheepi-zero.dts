@@ -9,10 +9,12 @@
 
 	aliases {
 		serial0 = &uart0;
+		ethernet0 = &emac;
 	};
 
 	chosen {
-		stdout-path = "serial0:115200n8";
+		//stdout-path = "serial0:115200n8";
+		bootargs = "console=ttyS0,115200 earlyprintk panic=5 rootwait mtdparts=spi0.0:1M(uboot)ro,128k(dtb)ro,5M(kernel)ro,-(rootfs) ubi.mtd=3 root=ubi0:rootfs rw rootfstype=ubifs";
 	};
 
 	leds {
@@ -33,6 +35,41 @@
 			label = "red";
 			gpios = <&pio 6 2 GPIO_ACTIVE_LOW>; /* PG2 */
 			linux,default-trigger = "activity";
+		};
+	};
+};
+
+&spi0 {
+	status ="okay";
+	
+	spi_nand: spi_nand@0 {
+        #address-cells = <1>;
+        #size-cells = <1>;
+        compatible = "spi-nand";
+        reg = <0>;
+        spi-max-frequency = <50000000>;
+ 
+		partition@0 {
+			label = "uboot";
+			reg = <0x0 0x100000>;
+			read-only;
+		};
+ 
+		partition@100000 {
+			label = "dtb";
+			reg = <0x100000 0x20000>;
+			read-only;
+		};
+ 
+		partition@120000 {
+			label = "kernel";
+			reg = <0x120000 0x500000>;
+			read-only;
+		};
+ 
+		partition@620000 {
+			label = "rootfs";
+			reg = <0x620000 0x79E0000>;
 		};
 	};
 };
@@ -171,3 +208,27 @@
 	};
 };
 
+&mmc1 {
+	broken-cd;
+	bus-width = <4>;
+	vmmc-supply = <&reg_vcc3v3>;
+	status = "disabled";
+};
+
+/*
+&codec {
+	allwinner,audio-routing =
+		"Headphone", "HP",
+		"Headphone", "HPCOM",
+		"MIC1", "Mic",
+		"Mic",  "HBIAS";
+	status = "okay";
+};
+*/
+
+&emac {
+	phy-handle = <&int_mii_phy>;
+	phy-mode = "mii";
+	allwinner,leds-active-low;
+	status = "okay";
+};
