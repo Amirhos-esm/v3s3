@@ -197,7 +197,7 @@
 	status = "okay";
 };
 
-/*
+
 &codec {
 	allwinner,audio-routing =
 		"Headphone", "HP",
@@ -206,7 +206,7 @@
 		"Mic",  "HBIAS";
 	status = "okay";
 };
-*/
+
 /*
 &emac {
 	phy-handle = <&int_mii_phy>;
