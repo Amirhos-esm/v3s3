@@ -18,7 +18,14 @@
 	};
 
 	leds {
+		compatible = "gpio-leds";
+
+		red_led {
+			label = "red";
+			gpios = <&pio 1 4 GPIO_ACTIVE_HIGH>; /* PB4 */
+		};
 	};
+
 };
 
 &spi0 {
@@ -55,6 +62,7 @@
 		};
 	};
 };
+
 
 &usb_otg {
 	dr_mode = "host";
