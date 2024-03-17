@@ -1,0 +1,34 @@
+#!/bin/sh
+#
+# Start the network and configure wireless settings...
+
+case "$1" in
+  start)
+    printf "Starting network: "
+    /sbin/ifup -a
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+
+    # Load kernel module
+    printf "Loading kernel module: "
+    insmod /root/8189es.ko
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+
+    # Bring up wireless interface
+    printf "Bringing up wlan0: "
+    ifconfig wlan0 up
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+
+    # Configure wireless settings using wpa_supplicant
+    printf "Configuring wireless settings: "
+    wpa_supplicant -B -d -i wlan0 -c /etc/wpa_supplicant.conf
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+
+    # Obtain IP address using udhcpc
+    printf "Obtaining IP address: "
+      udhcpc -i wlan0 -x "hostname:PNR-CAM" &
+    [ $? = 0 ] && echo "OK" || echo "FAIL"
+    ;;
+esac
+
+exit $?
+ 

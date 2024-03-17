@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Start the network and configure wireless settings...
+
+# Load ov5640 kernel module
+printf "Loading ov5640 kernel module: "
+insmod /lib/modules/5.19.3/kernel/drivers/media/i2c/ov5640.ko
+[ $? = 0 ] && echo "OK" || echo "FAIL"
+
+# Check dmesg for ov5640
+if dmesg | grep -q "ov5640"; then
+  echo "ov5640 module loaded. Rebooting..."
+  reboot
+else
+  # If ov5640 is not present in dmesg, set amixer configuration
+  printf "Setting amixer configuration: "
+  amixer -c 0 cset numid=12 2
+  [ $? = 0 ] && echo "OK" || echo "FAIL"
+fi
