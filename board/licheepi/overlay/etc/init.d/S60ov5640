@@ -1,0 +1,54 @@
+#!/bin/sh
+#
+# Start uMTPrd....
+#
+
+start() {
+    printf "Starting Camera:"
+    modprobe ov5640
+    if [ -e "/dev/media0" ]; then
+        echo "OK"
+    else
+        echo "FAIL"
+        unbind_i2c
+        sleep 1
+        bind_i2c
+    fi
+}
+
+stop() {
+    # Stop logic here
+	unbind_i2c
+}
+
+unbind_i2c() {
+    echo -n "Unbinding ov5640 device..."
+    echo "1-003c" > /sys/bus/i2c/drivers/ov5640/unbind
+    echo "done"
+}
+
+bind_i2c() {
+    echo -n "Binding ov5640 device..."
+    echo "1-003c" > /sys/bus/i2c/drivers/ov5640/bind
+    echo "done"
+}
+
+
+case "$1" in
+    start)
+    start
+    ;;
+    stop)
+    stop
+    ;;
+    restart|reload)
+    stop
+    sleep 1
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?
