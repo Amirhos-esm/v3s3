@@ -22,15 +22,17 @@ stop() {
 }
 
 unbind_i2c() {
-    echo -n "Unbinding ov5640 device..."
-    echo "1-003c" > /sys/bus/i2c/drivers/ov5640/unbind
-    echo "done"
+    #echo -n "Unbinding ov5640 device..."
+    #echo "1-003c" > /sys/bus/i2c/drivers/ov5640/unbind
+    #echo "done"
+    modprobe -r ov5640
 }
 
 bind_i2c() {
-    echo -n "Binding ov5640 device..."
-    echo "1-003c" > /sys/bus/i2c/drivers/ov5640/bind
-    echo "done"
+    #echo -n "Binding ov5640 device..."
+    #echo "1-003c" > /sys/bus/i2c/drivers/ov5640/bind
+    #echo "done"
+    modprobe ov5640
 }
 
 
